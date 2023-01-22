@@ -66,9 +66,9 @@ keyboard_layout = KeyboardLayoutUS(keyboard)
 # shortcut titles and colours
 
 shortcuts_list = ["focus", "top", "front","right",
-                  "zoom", "l cut", "cam", "tbd",
+                  "zoom", "l cut", "cam", "shear",
                   "sel+-", "tbd", "tbd", "tbd",
-                  "xray", "tbd", "tbd", "tbd",]
+                  "xray", "apply", "tbd", "tbd",]
 pixel_colours = [ 0x0000FF, 0x00FF00, 0xFF0000,
                   0xFF7F50, 0xDFFF00, 0xE74C3C,
                   0xE74C3C, 0xE74C3C, 0xE74C3C,
@@ -76,7 +76,7 @@ pixel_colours = [ 0x0000FF, 0x00FF00, 0xFF0000,
 button_keycodes = [[Keycode.KEYPAD_SEVEN], [Keycode.KEYPAD_ONE], [Keycode.KEYPAD_THREE],
                    [Keycode.CONTROL, Keycode.R], [Keycode.KEYPAD_ZERO], [Keycode.KEYPAD_THREE],
                    [Keycode.KEYPAD_SEVEN], [Keycode.KEYPAD_ONE], [Keycode.KEYPAD_THREE],
-                   [Keycode.KEYPAD_SEVEN], [Keycode.KEYPAD_ONE], [Keycode.KEYPAD_THREE],]
+                   [Keycode.CONTROL, Keycode.A], [Keycode.KEYPAD_ONE], [Keycode.KEYPAD_THREE],]
 
 # create display as grid
 main_group = displayio.Group()
@@ -131,21 +131,29 @@ while True:
 
     if position_change != 0:
         modulo_position = position % 3
-        if position == 0:
+        if modulo_position == 0:
             keyboard.press(Keycode.ONE)
             time.sleep(0.09)
             keyboard.release(Keycode.ONE)
-        elif position == 1:
+        elif modulo_position == 1:
             keyboard.press(Keycode.TWO)
             time.sleep(0.09)
             keyboard.release(Keycode.TWO)
-        elif position == 2:
+        elif modulo_position == 2:
             keyboard.press(Keycode.THREE)
             time.sleep(0.09)
             keyboard.release(Keycode.THREE)
 
     last_position = position
-    #print(macropad.encoder_switch)
+    
+    # use macropad encoder button
+    
+    macropad.encoder_switch_debounced.update()
+    if macropad.encoder_switch_debounced.pressed:
+        keyboard.press(Keycode.O)
+    if macropad.encoder_switch_debounced.released:
+        keyboard.release(Keycode.O)
+        
 
     # read frirst encoder change and do a thing
 
